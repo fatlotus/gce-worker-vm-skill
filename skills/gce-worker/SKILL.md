@@ -34,7 +34,7 @@ Command | Description
 `./scripts/worker.sh down` | Terminate and delete the worker VM when finished to avoid costs.
 `./scripts/worker.sh ensure` | Verify worker VM health; reprovision if unresponsive or stopped.
 
-*(Tip: You can invoke `bash /home/khakimaroon/agy-off-site-skills/skills/gce-worker/scripts/worker.sh <cmd>` from any directory).*
+*(Tip: You can invoke `worker <cmd>` or `bash <path-to-skill>/scripts/worker.sh <cmd>` from any directory).*
 
 --------------------------------------------------------------------------------
 
@@ -45,28 +45,28 @@ Command | Description
 Before launching long-running or memory-heavy tasks:
 
 ```bash
-bash /home/khakimaroon/agy-off-site-skills/skills/gce-worker/scripts/worker.sh up
+worker up
 ```
 
 This command automatically:
-1. Verifies local SSH key setup (`~/.ssh/google_compute_engine`).
+1. Verifies local SSH key setup (`~/.ssh/google_compute_engine` or `~/.ssh/id_rsa`).
 2. Configures the host's NFS server strictly for `10.0.0.0/8` via [setup-nfs.sh](./scripts/setup-nfs.sh).
 3. Launches the preemptible GCE VM in the same zone as the current instance.
 4. Waits for the worker VM to boot, mount `$HOME` via NFS, and signal readiness.
 
 ### 2. Execute Heavy Commands
 
-Run any heavy command directly through `worker.sh run`:
+Run any heavy command directly through `worker run`:
 
 ```bash
-bash /home/khakimaroon/agy-off-site-skills/skills/gce-worker/scripts/worker.sh run cargo build --release
+worker run cargo build --release
 ```
 
 Or for test suites and package builds:
 
 ```bash
-bash /home/khakimaroon/agy-off-site-skills/skills/gce-worker/scripts/worker.sh run pytest -v
-bash /home/khakimaroon/agy-off-site-skills/skills/gce-worker/scripts/worker.sh run npm run build
+worker run pytest -v
+worker run npm run build
 ```
 
 Because `$HOME` is mounted across both machines at the identical path, relative paths, workspace files, git repositories, and dependencies (like `~/.cargo`, `~/.cache`, or node modules) remain in sync.
@@ -74,7 +74,7 @@ Because `$HOME` is mounted across both machines at the identical path, relative 
 ### 3. Handling Crashes & Preemption
 
 Worker VMs are preemptible (SPOT). If GCP preempts the VM or if it crashes:
-- `worker.sh run` automatically detects that SSH is unresponsive or the instance is terminated.
+- `worker run` automatically detects that SSH is unresponsive or the instance is terminated.
 - It spins up a fresh replacement instance with the exact same parameters.
 - Because all files live on the host's persistent home directory, zero state is lost!
 
@@ -83,7 +83,7 @@ Worker VMs are preemptible (SPOT). If GCP preempts the VM or if it crashes:
 When work is finished, delete the worker VM:
 
 ```bash
-bash /home/khakimaroon/agy-off-site-skills/skills/gce-worker/scripts/worker.sh down
+worker down
 ```
 
 *(Note: Even if not deleted manually, the VM automatically self-destructs after 6 hours).*

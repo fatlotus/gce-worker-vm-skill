@@ -14,7 +14,7 @@ This document provides in-depth technical details on how the GCE worker skill op
  │   │ Primary VM            │         │ Worker VM (Preemptible│ │
  │   │ (agy-server)          │         │ agy-worker)           │ │
  │   │ Machine: e2-micro     │         │ Machine: e2-standard-4│ │
- │   │ IP: 10.128.15.197     │         │ IP: 10.128.x.x        │ │
+ │   │ IP: 10.x.x.x (Private)│         │ IP: 10.x.x.x (Private)│ │
  │   │                       │         │ (4 vCPU, 16 GiB RAM)  │ │
  │   │ ┌───────────────────┐ │ NFSv4.2 │ ┌───────────────────┐ │ │
  │   │ │ NFS Server        │◄├─────────┤ │ NFS Client        │ │ │
@@ -53,7 +53,7 @@ You can customize the worker VM by supplying environment variables:
 
 ```bash
 # Example: 8 vCPUs, 32 GiB RAM, 2 hours lifetime
-MACHINE_TYPE=e2-standard-8 MAX_DURATION=2h LIFETIME_MINS=120 bash /home/khakimaroon/agy-off-site-skills/skills/gce-worker/scripts/worker.sh up
+MACHINE_TYPE=e2-standard-8 MAX_DURATION=2h LIFETIME_MINS=120 worker up
 ```
 
 Common machine types in `us-central1-a`:

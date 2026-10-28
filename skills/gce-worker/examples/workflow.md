@@ -15,7 +15,7 @@ Rust builds often consume several gigabytes of RAM during macro expansion and li
 cd ~/onimath
 
 # Run cargo build on the 16 GiB worker VM:
-bash ~/agy-off-site-skills/skills/gce-worker/scripts/worker.sh run cargo build --release
+worker run cargo build --release
 ```
 
 - Cargo uses the shared `~/.cargo` cache across both machines.
@@ -28,7 +28,7 @@ bash ~/agy-off-site-skills/skills/gce-worker/scripts/worker.sh run cargo build -
 When evaluating machine learning benchmarks or processing large datasets:
 
 ```bash
-bash ~/agy-off-site-skills/skills/gce-worker/scripts/worker.sh run pytest tests/ -n auto
+worker run pytest tests/ -n auto
 ```
 
 The 4 vCPUs and 16 GiB memory allow pytest-xdist to parallelize test suites across all 4 cores without running out of RAM.
@@ -40,13 +40,13 @@ The 4 vCPUs and 16 GiB memory allow pytest-xdist to parallelize test suites acro
 If you need an interactive bash shell directly on the worker:
 
 ```bash
-bash ~/agy-off-site-skills/skills/gce-worker/scripts/worker.sh ssh
+worker ssh
 ```
 
 Once connected:
-- You are logged in as `khakimaroon` with matching UID/GID.
+- You are logged in with matching UID/GID.
 - Full passwordless `sudo` is available (`sudo apt-get install -y ...`).
-- `$HOME` is mounted at `/home/khakimaroon`.
+- `$HOME` is mounted at the exact same path.
 - Exit with `exit` or `Ctrl-D`.
 
 ---
@@ -57,10 +57,10 @@ If a preemptible worker is preempted or crashes during a long job:
 
 ```bash
 # Check status:
-bash ~/agy-off-site-skills/skills/gce-worker/scripts/worker.sh status
+worker status
 
 # Automatically restart worker:
-bash ~/agy-off-site-skills/skills/gce-worker/scripts/worker.sh ensure
+worker ensure
 ```
 
 Because all source files and git commits reside on the primary machine, the new worker instantly mounts the identical workspace state.
